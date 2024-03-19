@@ -11,4 +11,4 @@ const users = async () => {
   return response.data
 }
 
-export default { login ,users}
+export default {login ,users}

@@ -10,7 +10,25 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [newTitle, setNewTitle]= useState('')
+  const [newAuthor, setNewAuthor]= useState('')
+  const [newUrl, setNewUrl]= useState('')
+  const [loggedIn,setLoggedIn] = useState(null)
 
+  useEffect(() => {
+    loginService.users()
+      .then(users => {
+        const loggedInUser = users.find(listUser => listUser.username.toLowerCase() == user.username.toLowerCase());
+        if (loggedInUser) {
+          setLoggedIn(loggedInUser);
+        } else {
+          // Handle case where user is not found
+          console.error("User not found");
+        }
+      })
+  }, []);
+  console.log(user)
+    
 
     useEffect(() => {
       const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -49,6 +67,7 @@ const App = () => {
     .then(blogs =>setBlogs( blogs ))  
   }, [])
 
+
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
@@ -78,6 +97,51 @@ const App = () => {
       <button type="submit">login</button>
     </form>      
   )
+  const addBlog = (e) =>{
+    e.preventDefault()
+    const blogObject = {
+      title : newTitle,
+      author: newAuthor,
+      url: newUrl,
+      user:loggedIn.id
+    }
+
+    blogService
+      .create(blogObject, user.token)
+      .then(returnedObj => 
+        {setBlogs(blogs.concat(returnedObj))
+          setNewAuthor('')
+          setNewTitle('')
+          setNewUrl('')})
+
+        
+  }
+  const blogForm = () => (
+    <div>
+      <h2> create new</h2>
+      <form onSubmit={addBlog}>
+        <label>title
+          <input 
+          value={newTitle}
+          onChange ={({target})=>setNewTitle(target.value)}/>
+        </label>
+        <br />
+        <label>author
+          <input
+          value={newAuthor}
+          onChange ={({target})=>setNewAuthor(target.value)} />
+        </label>
+          <br />
+        <label>url
+          <input 
+          value={newUrl}
+          onChange ={({target})=>setNewUrl(target.value)} />
+        </label>
+        <br />
+        <button type="submit">create</button>
+      </form>  
+    </div>
+  )
 
 
   return (
@@ -92,6 +156,7 @@ const App = () => {
             {user.name} logged-in
             </span>
             <button type='button' onClick={logout}>logout</button>
+            {blogForm()}
           </div>
         }
       <h2>blogs</h2>
