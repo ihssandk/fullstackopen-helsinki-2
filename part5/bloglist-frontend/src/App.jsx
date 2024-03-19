@@ -7,6 +7,7 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -21,9 +22,6 @@ const App = () => {
         const loggedInUser = users.find(listUser => listUser.username.toLowerCase() == user.username.toLowerCase());
         if (loggedInUser) {
           setLoggedIn(loggedInUser);
-        } else {
-          // Handle case where user is not found
-          console.error("User not found");
         }
       })
   }, []);
@@ -112,7 +110,12 @@ const App = () => {
         {setBlogs(blogs.concat(returnedObj))
           setNewAuthor('')
           setNewTitle('')
-          setNewUrl('')})
+          setNewUrl('')
+          setMessage(`a new blog ${newTitle} by ${newAuthor}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)}
+          )
 
         
   }
@@ -147,7 +150,8 @@ const App = () => {
   return (
     <div>
        <h1>login</h1>
-         <Notification message={errorMessage} />
+         <Notification color='red' message={errorMessage} />
+         <Notification color='green' message={message} />
          {user === null ?
           loginForm() :
           <div>
