@@ -45,12 +45,14 @@ const App = () => {
     }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      {console.log(blogs)
-      setBlogs( blogs )}
-      
-    )  
+    blogService.getAll(user?.token)
+    .then(blogs =>setBlogs( blogs ))  
   }, [])
+
+  const logout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+  }
 
   
   const loginForm = () => (
@@ -85,8 +87,11 @@ const App = () => {
          {user === null ?
           loginForm() :
           <div>
-            <p>{user.name} logged-in</p>
-            <button>logout</button>
+    
+            <span>
+            {user.name} logged-in
+            </span>
+            <button type='button' onClick={logout}>logout</button>
           </div>
         }
       <h2>blogs</h2>

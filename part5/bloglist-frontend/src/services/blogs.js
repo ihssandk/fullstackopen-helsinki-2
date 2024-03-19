@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = '/api/blogs'
+const baseUrl = '/api/blog'
 
 let token = null
 const setToken = newToken => {
@@ -7,8 +7,8 @@ const setToken = newToken => {
 }
 
 const getAll = async (token) => {
-  const request = await axios.get(baseUrl)
-  return request.then(response => response.data)
+  const response = await axios.get(baseUrl)
+  return response.data
 }
 
   export default {getAll, setToken}
