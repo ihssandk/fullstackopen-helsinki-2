@@ -1,15 +1,15 @@
-const Blog = ({ blog }) => (
+const Blog = ({blog ,onclick}) =>{
 
+return(
   <div>
-    
     {blog.url} 
-    
-    <div>
-    likes : {blog.likes} 
-    <button>like</button>
+    <div>likes : {blog.likes} 
+    <button
+      type='button'
+      onClick={onclick}>like</button>
     </div>
     {blog.author}
   </div>  
-)
+)}
 
 export default Blog
