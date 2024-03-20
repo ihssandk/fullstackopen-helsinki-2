@@ -8,7 +8,7 @@ return(
       type='button'
       onClick={onclick}>like</button>
     </div>
-    {blog.author}
+    
   </div>  
 )}
 

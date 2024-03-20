@@ -21,13 +21,10 @@ const App = () => {
   useEffect(() => {
     loginService.users()
       .then(users => {
-        const loggedInUser = users.find(listUser => listUser.username.toLowerCase() == user?.username.toLowerCase()
-          )
+        const loggedInUser = users.find(listUser => listUser.username.toLowerCase() == user?.username.toLowerCase())
         if (loggedInUser) {
-          setLoggedIn(loggedInUser);
-        }
-      })
-   }, []);
+          setLoggedIn(loggedInUser);}
+      })}, []);
 
     useEffect(() => {
       const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -40,8 +37,12 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll(user?.token)
-    .then(blogs =>setBlogs( blogs ))  
+      .then(blogs => {
+        blogs.sort((a, b) => b.likes - a.likes)
+        setBlogs(blogs)
+      })
   }, [])
+  
   
   const handleLogin = async (event) => {
     event.preventDefault()
