@@ -1,22 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
+
+  const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [message, setMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newTitle, setNewTitle]= useState('')
-  const [newAuthor, setNewAuthor]= useState('')
-  const [newUrl, setNewUrl]= useState('')
   const [loggedIn,setLoggedIn] = useState(null)
-  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     loginService.users()
@@ -30,8 +29,6 @@ const App = () => {
       })
    }, []);
 
-    
-
     useEffect(() => {
       const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
       if (loggedUserJSON) {
@@ -41,6 +38,11 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    blogService.getAll(user?.token)
+    .then(blogs =>setBlogs( blogs ))  
+  }, [])
+  
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -64,17 +66,11 @@ const App = () => {
     }
     }
 
-  useEffect(() => {
-    blogService.getAll(user?.token)
-    .then(blogs =>setBlogs( blogs ))  
-  }, [])
-
 
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
-
   
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -100,31 +96,20 @@ const App = () => {
     </form>      
   )
 
-  const addBlog = (e) =>{
-    e.preventDefault()
-    const blogObject = {
-      title : newTitle,
-      author: newAuthor,
-      url: newUrl,
-      user:loggedIn.id
-    }
-
+  const addBlog = (blogObject) =>{
+    blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject, user.token)
       .then(returnedObj => 
         {setBlogs(blogs.concat(returnedObj))
-          setNewAuthor('')
-          setNewTitle('')
-          setNewUrl('')
-          setMessage(`a new blog ${newTitle} by ${newAuthor}`)
+          setMessage(`a new blog ${blogObject.title} by ${blogObject.author}`)
           setTimeout(() => {
             setMessage(null)
-          }, 5000)}
-          )}
+          }, 5000)
+         }
+          )       
+  }
 
-      const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-      const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
-  
   return (
     <div>
        <h1>login</h1>
@@ -134,28 +119,22 @@ const App = () => {
           loginForm() :
           <div>
             <span>
-            {user.name} logged-in
+            {user.name} logged-in 
             </span>
-            <button type='button' onClick={logout}>logout</button>
-           
-            <div style={hideWhenVisible}>
-              <button onClick={() => setBlogFormVisible(true)}>create new</button>
-            </div>
-            <div style={showWhenVisible}>
-
-                <BlogForm 
-                  addBlog={addBlog}
-                  title={newTitle}
-                  author={newAuthor}
-                  url={newUrl}
-                  handleTitle={({target}) =>setNewTitle(target.value)}
-                  handleAuthor={({target}) =>setNewAuthor(target.value)}
-                  handleUrl={({target}) =>setNewUrl(target.value)}/>
-              <button onClick={() => setBlogFormVisible(false)}>cancel</button>
-            </div>
+            <button
+              type='button'
+              onClick={logout}>logout
+            </button>
+          
+            <Togglable buttonLabel='create new' ref={blogFormRef}>
+              <BlogForm 
+                    createBlog={addBlog}
+                    currUser={loggedIn?.id}
+                    />
+            </Togglable>
           </div>
-        
         }
+
       <h2>blogs</h2>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
