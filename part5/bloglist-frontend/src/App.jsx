@@ -38,10 +38,13 @@ const App = () => {
   useEffect(() => {
     blogService.getAll(user?.token)
       .then(blogs => {
-        blogs.sort((a, b) => b.likes - a.likes)
-        setBlogs(blogs)
-      })
-  }, [])
+        blogs.sort((a, b) => {
+          if (a.likes === b.likes) {
+            return a.id - b.id}
+          return b.likes - a.likes});
+        setBlogs(blogs);
+      });
+  }, [blogs]);
   
   
   const handleLogin = async (event) => {
