@@ -9,6 +9,7 @@ import Togglable from './components/Togglable'
 const App = () => {
 
   const blogFormRef = useRef()
+  const blogInfoRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [message, setMessage] = useState(null)
@@ -126,7 +127,7 @@ const App = () => {
               onClick={logout}>logout
             </button>
           
-            <Togglable buttonLabel='create new' ref={blogFormRef}>
+            <Togglable buttonLabel='create new' cancelLabel='cancel' ref={blogFormRef}>
               <BlogForm 
                     createBlog={addBlog}
                     currUser={loggedIn?.id}
@@ -137,7 +138,17 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <div style={{border: '1px solid rgba(0, 0, 0, 0.05)'}}>
+          <span>{blog.title} by {blog.author}</span>
+          <Togglable buttonLabel='view' cancelLabel='hide' ref={blogFormRef}>
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  buttonLabel='view'
+                  cancelLabel='hide'
+                  ref={blogInfoRef}/>
+          </Togglable>
+        </div>
       )}
     </div>
   )
