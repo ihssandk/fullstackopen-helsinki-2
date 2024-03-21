@@ -16,3 +16,14 @@
     padding: 10px;
     margin-bottom: 10px;
   }
+
+  button{
+    margin-top: 5px;
+  }
+
+  input {
+    margin-bottom: 5px;
+    margin-left: 5px;
+    border-radius: 15%;
+    border-style: groove;
+  }

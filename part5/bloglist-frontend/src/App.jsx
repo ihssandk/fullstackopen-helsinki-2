@@ -17,6 +17,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [loggedIn,setLoggedIn] = useState(null)
+  const [likeUpdate, setLikeUpdate] = useState(false)
 
   useEffect(() => {
     loginService.users()
@@ -24,7 +25,7 @@ const App = () => {
         const loggedInUser = users.find(listUser => listUser.username.toLowerCase() == user?.username.toLowerCase())
         if (loggedInUser) {
           setLoggedIn(loggedInUser);}
-      })}, []);
+      })}, [user]);
 
     useEffect(() => {
       const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -44,7 +45,7 @@ const App = () => {
           return b.likes - a.likes});
         setBlogs(blogs);
       });
-  }, [blogs]);
+  }, [likeUpdate]);
   
   
   const handleLogin = async (event) => {
@@ -117,6 +118,7 @@ const App = () => {
     blogService.likingBlog(b.id, {...b,likes : b.likes +1})
     const newList = await blogService.getAll(user?.token)
     setBlogs(newList)
+    setLikeUpdate(!likeUpdate)
   }
 
   return (
@@ -146,10 +148,11 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <div key={blog.id} style={{border: '1px solid rgba(0, 0, 0, 1)'}}>
+        <div key={blog.id} style={{border: '1px dotted rgba(0, 0, 0, 1)' ,padding :'5px' ,marginBottom : '5px'}}>
           <span>{blog.title} by {blog.author}</span>
           <Togglable buttonLabel='view' cancelLabel='hide' ref={blogInfoRef}>
                 <Blog
+                  userId={loggedIn?.id}
                   blog={blog}
                   onclick={() =>likePost(blog)}
                 />
