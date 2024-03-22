@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable no-trailing-spaces */
 import { useState } from 'react'
 
 const BlogForm = ({ createBlog , currUser }) => {
@@ -24,24 +26,24 @@ const BlogForm = ({ createBlog , currUser }) => {
       <h2>Create a new blog</h2>
       <form onSubmit={addBlog}>
         <label>title
-            <input 
+          <input 
             value={newTitle}
-            onChange={(e) =>setNewTitle(e.target.value)}/>
-          </label>
-          <br />
-        <label>author
-            <input
-            value={newAuthor}
-            onChange={(e) =>setNewAuthor(e.target.value)}/>
+            onChange={(e) => setNewTitle(e.target.value)}/>
         </label>
-            <br />
+        <br />
+        <label>author
+          <input
+            value={newAuthor}
+            onChange={(e) => setNewAuthor(e.target.value)}/>
+        </label>
+        <br />
         <label>url
-            <input 
+          <input 
             value={newUrl}
             onChange={(e) => setNewUrl(e.target.value)} />
         </label>
-          <br />
-          <button type="submit">create</button>
+        <br />
+        <button type="submit">create</button>
       </form> 
     </div>
   )

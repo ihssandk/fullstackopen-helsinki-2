@@ -26,7 +26,7 @@ const App = () => {
         const loggedInUser = users.find(listUser => listUser.username === user?.username)
         if (loggedInUser) {
           setLoggedIn(loggedInUser)}
-      })}, [user])
+      })}, [user?.username])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -38,6 +38,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
+    blogService.getAll().then(blogs => setBlogs(blogs))
+
+  }, [message,errorMessage])
+
+  useEffect(() => {
     blogService.getAll()
       .then(blogs => {
         blogs.sort((a, b) => {
@@ -47,7 +52,6 @@ const App = () => {
         setBlogs(blogs)
       })
   }, [likeUpdate])
-
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -61,10 +65,10 @@ const App = () => {
       )
 
       blogService.setToken(user.token)
-      setUser(user)
+      setUser(user) // Set the user after successful login
       setUsername('')
       setPassword('')
-    } catch (exception){
+    } catch (exception) {
       setErrorMessage('Incorrect username or password, Retry')
       setTimeout(() => {
         setErrorMessage(null)
@@ -117,16 +121,16 @@ const App = () => {
 
   const likePost= async (b) => {
     blogService.likingBlog(b.id, { ...b,likes : b.likes +1 })
-    const newList = await blogService.getAll()
-    setBlogs(newList)
+    b.likes = b.likes +1
     setLikeUpdate(!likeUpdate)
   }
 
   const deleteBlog = async (b) => {
     if (window.confirm(`Are you sure you want to delete ${b.title}`)){
       blogService.deleteBlog(b.id , user.token)
+      blogs.splice(blogs.indexOf(b) , 1)
       const newList = await blogService.getAll()
-      setBlogs(newList)
+      if (newList.length  > 0){setBlogs(newList)}
     }
   }
 
@@ -167,13 +171,13 @@ const App = () => {
         <div
           key={blog.id}
           style={{ border: '1px dotted rgba(0, 0, 0, 1)' ,padding :'5px' ,marginBottom : '5px' }}>
-          <span>{blog.title} by {blog.author}</span>
           <Togglable
+            sectionTitle={`${blog.title} by ${blog.author}`}
             buttonLabel='view'
             cancelLabel='hide'
             ref={blogInfoRef}>
             <Blog
-              userId={loggedIn?.id}
+              user={loggedIn?.username}
               blog={blog}
               likeBlog={() => likePost(blog)}
               deleteBlog={() => deleteBlog(blog)}

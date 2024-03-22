@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import axios from 'axios'
 const baseUrl = '/api/login'
 
@@ -11,4 +12,4 @@ const users = async () => {
   return response.data
 }
 
-export default {login ,users}
+export default { login ,users }

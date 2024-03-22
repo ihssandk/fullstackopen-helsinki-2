@@ -1,9 +1,10 @@
+/* eslint-disable linebreak-style */
 import axios from 'axios'
 const baseUrl = '/api/blog'
 
 let token = null
 const setToken = newToken => {
-    token = `Bearer ${newToken}`
+  token = `Bearer ${newToken}`
 }
 
 const getAll = async () => {
@@ -32,4 +33,4 @@ const deleteBlog = async (id) => {
   return response.ok
 }
 
-  export default {getAll, create, likingBlog, deleteBlog, setToken}
+export default { getAll, create, likingBlog, deleteBlog, setToken }

@@ -20,11 +20,11 @@
   button{
     margin-top: 5px;
     cursor: pointer;
+    font-style: oblique;
   }
 
   input {
     margin-bottom: 5px;
     margin-left: 5px;
-    border-radius: 15%;
     border-style: groove;
   }

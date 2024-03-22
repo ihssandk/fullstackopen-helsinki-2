@@ -1,13 +1,14 @@
+/* eslint-disable linebreak-style */
 const Notification = ({ message , color }) => {
-    if (message === null) {
-      return null
-    }
-  
-    return (
-      <div className={color==='green' ? 'notification' : 'error'}>
-        {message}
-      </div>
-    )
+  if (message === null) {
+    return null
   }
-  
-  export default Notification
+
+  return (
+    <div className={color==='green' ? 'notification' : 'error'}>
+      {message}
+    </div>
+  )
+}
+
+export default Notification
