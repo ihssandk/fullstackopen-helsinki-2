@@ -1,4 +1,4 @@
-const Blog = ({blog ,onclick , userId}) =>{
+const Blog = ({blog ,likeBlog , deleteBlog, userId}) =>{
 
 return(
   <div>
@@ -6,10 +6,10 @@ return(
     <div>likes : {blog.likes} 
     <button
       type='button'
-      onClick={onclick}>like</button>
+      onClick={likeBlog}>like</button>
     </div>
-    { userId === blog.user && (
-      <button style={{background:'#0ed2ff'}}>remove</button>
+    { userId == blog.user?.id && (
+      <button onClick={deleteBlog} style={{background:'#0ed2ff'}}>remove</button>
     )}
   </div>  
 )}

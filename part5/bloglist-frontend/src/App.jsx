@@ -22,7 +22,7 @@ const App = () => {
   useEffect(() => {
     loginService.users()
       .then(users => {
-        const loggedInUser = users.find(listUser => listUser.username.toLowerCase() == user?.username.toLowerCase())
+        const loggedInUser = users.find(listUser => listUser.username == user?.username)
         if (loggedInUser) {
           setLoggedIn(loggedInUser);}
       })}, [user]);
@@ -116,16 +116,28 @@ const App = () => {
 
   const likePost= async (b) => {
     blogService.likingBlog(b.id, {...b,likes : b.likes +1})
-    const newList = await blogService.getAll(user?.token)
+    const newList = await blogService.getAll()
     setBlogs(newList)
     setLikeUpdate(!likeUpdate)
+  }
+
+  const deleteBlog = async (b) =>{
+    if (window.confirm(`Are you sure you want to delete ${b.title}`)){
+        blogService.deleteBlog(b.id , user.token)
+        const newList = await blogService.getAll()
+        setBlogs(newList)
+    }
   }
 
   return (
     <div>
        <h1>login</h1>
-         <Notification color='red' message={errorMessage} />
-         <Notification color='green' message={message} />
+         <Notification
+          color='red'
+          message={errorMessage} />
+         <Notification
+          color='green'
+          message={message} />
          {user === null ?
           loginForm() :
           <div>
@@ -137,7 +149,10 @@ const App = () => {
               onClick={logout}>logout
             </button>
           
-            <Togglable buttonLabel='create new' cancelLabel='cancel' ref={blogFormRef}>
+            <Togglable
+              buttonLabel='create new'
+              cancelLabel='cancel'
+              ref={blogFormRef}>
               <BlogForm 
                     createBlog={addBlog}
                     currUser={loggedIn?.id}
@@ -148,13 +163,19 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <div key={blog.id} style={{border: '1px dotted rgba(0, 0, 0, 1)' ,padding :'5px' ,marginBottom : '5px'}}>
+        <div 
+          key={blog.id}
+          style={{border: '1px dotted rgba(0, 0, 0, 1)' ,padding :'5px' ,marginBottom : '5px'}}>
           <span>{blog.title} by {blog.author}</span>
-          <Togglable buttonLabel='view' cancelLabel='hide' ref={blogInfoRef}>
+          <Togglable
+            buttonLabel='view'
+            cancelLabel='hide'
+            ref={blogInfoRef}>
                 <Blog
                   userId={loggedIn?.id}
                   blog={blog}
-                  onclick={() =>likePost(blog)}
+                  likeBlog={() =>likePost(blog)}
+                  deleteBlog={() =>deleteBlog(blog)}
                 />
           </Togglable>
         </div>
