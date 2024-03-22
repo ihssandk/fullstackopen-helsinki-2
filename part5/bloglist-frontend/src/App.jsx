@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -22,32 +23,32 @@ const App = () => {
   useEffect(() => {
     loginService.users()
       .then(users => {
-        const loggedInUser = users.find(listUser => listUser.username == user?.username)
+        const loggedInUser = users.find(listUser => listUser.username === user?.username)
         if (loggedInUser) {
-          setLoggedIn(loggedInUser);}
-      })}, [user]);
+          setLoggedIn(loggedInUser)}
+      })}, [user])
 
-    useEffect(() => {
-      const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-      if (loggedUserJSON) {
-        const user = JSON.parse(loggedUserJSON)
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
 
   useEffect(() => {
-    blogService.getAll(user?.token)
+    blogService.getAll()
       .then(blogs => {
         blogs.sort((a, b) => {
           if (a.likes === b.likes) {
             return a.id - b.id}
-          return b.likes - a.likes});
-        setBlogs(blogs);
-      });
-  }, [likeUpdate]);
-  
-  
+          return b.likes - a.likes})
+        setBlogs(blogs)
+      })
+  }, [likeUpdate])
+
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -57,30 +58,30 @@ const App = () => {
 
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-        ) 
+      )
 
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
-       } catch (exception){
+    } catch (exception){
       setErrorMessage('Incorrect username or password, Retry')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
     }
-    }
+  }
 
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
-  
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -89,7 +90,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -97,86 +98,86 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>      
+    </form>
   )
 
-  const addBlog = (blogObject) =>{
+  const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject, user.token)
-      .then(returnedObj => 
-        {setBlogs(blogs.concat(returnedObj))
-          setMessage(`a new blog ${blogObject.title} by ${blogObject.author}`)
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
-         }
-          )       
+      .then(returnedObj =>
+      {setBlogs(blogs.concat(returnedObj))
+        setMessage(`a new blog ${blogObject.title} by ${blogObject.author}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      }
+      )
   }
 
   const likePost= async (b) => {
-    blogService.likingBlog(b.id, {...b,likes : b.likes +1})
+    blogService.likingBlog(b.id, { ...b,likes : b.likes +1 })
     const newList = await blogService.getAll()
     setBlogs(newList)
     setLikeUpdate(!likeUpdate)
   }
 
-  const deleteBlog = async (b) =>{
+  const deleteBlog = async (b) => {
     if (window.confirm(`Are you sure you want to delete ${b.title}`)){
-        blogService.deleteBlog(b.id , user.token)
-        const newList = await blogService.getAll()
-        setBlogs(newList)
+      blogService.deleteBlog(b.id , user.token)
+      const newList = await blogService.getAll()
+      setBlogs(newList)
     }
   }
 
   return (
     <div>
-       <h1>login</h1>
-         <Notification
-          color='red'
-          message={errorMessage} />
-         <Notification
-          color='green'
-          message={message} />
-         {user === null ?
-          loginForm() :
-          <div>
-            <span>
-            {user.name} logged-in 
-            </span>
-            <button
-              type='button'
-              onClick={logout}>logout
-            </button>
-          
-            <Togglable
-              buttonLabel='create new'
-              cancelLabel='cancel'
-              ref={blogFormRef}>
-              <BlogForm 
-                    createBlog={addBlog}
-                    currUser={loggedIn?.id}
-                    />
-            </Togglable>
-          </div>
-        }
+      <h1>login</h1>
+      <Notification
+        color='red'
+        message={errorMessage} />
+      <Notification
+        color='green'
+        message={message} />
+      {user === null ?
+        loginForm() :
+        <div>
+          <span>
+            {user.name} logged-in
+          </span>
+          <button
+            type='button'
+            onClick={logout}>logout
+          </button>
+
+          <Togglable
+            buttonLabel='create new'
+            cancelLabel='cancel'
+            ref={blogFormRef}>
+            <BlogForm
+              createBlog={addBlog}
+              currUser={loggedIn?.id}
+            />
+          </Togglable>
+        </div>
+      }
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <div 
+        <div
           key={blog.id}
-          style={{border: '1px dotted rgba(0, 0, 0, 1)' ,padding :'5px' ,marginBottom : '5px'}}>
+          style={{ border: '1px dotted rgba(0, 0, 0, 1)' ,padding :'5px' ,marginBottom : '5px' }}>
           <span>{blog.title} by {blog.author}</span>
           <Togglable
             buttonLabel='view'
             cancelLabel='hide'
             ref={blogInfoRef}>
-                <Blog
-                  userId={loggedIn?.id}
-                  blog={blog}
-                  likeBlog={() =>likePost(blog)}
-                  deleteBlog={() =>deleteBlog(blog)}
-                />
+            <Blog
+              userId={loggedIn?.id}
+              blog={blog}
+              likeBlog={() => likePost(blog)}
+              deleteBlog={() => deleteBlog(blog)}
+            />
           </Togglable>
         </div>
       )}
