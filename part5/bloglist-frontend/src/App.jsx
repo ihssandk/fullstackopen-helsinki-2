@@ -10,7 +10,6 @@ import Togglable from './components/Togglable'
 const App = () => {
 
   const blogFormRef = useRef()
-  const blogInfoRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [message, setMessage] = useState(null)
@@ -39,7 +38,6 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
-
   }, [message,errorMessage])
 
   useEffect(() => {
@@ -128,9 +126,7 @@ const App = () => {
   const deleteBlog = async (b) => {
     if (window.confirm(`Are you sure you want to delete ${b.title}`)){
       blogService.deleteBlog(b.id , user.token)
-      blogs.splice(blogs.indexOf(b) , 1)
-      const newList = await blogService.getAll()
-      if (newList.length  > 0){setBlogs(newList)}
+      blogs.splice(blogs.indexOf(b), 1)
     }
   }
 
@@ -153,7 +149,6 @@ const App = () => {
             type='button'
             onClick={logout}>logout
           </button>
-
           <Togglable
             buttonLabel='create new'
             cancelLabel='cancel'
@@ -168,21 +163,13 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <div
-          key={blog.id}
-          style={{ border: '1px dotted rgba(0, 0, 0, 1)' ,padding :'5px' ,marginBottom : '5px' }}>
-          <Togglable
-            sectionTitle={`${blog.title} by ${blog.author}`}
-            buttonLabel='view'
-            cancelLabel='hide'
-            ref={blogInfoRef}>
-            <Blog
-              user={loggedIn?.username}
-              blog={blog}
-              likeBlog={() => likePost(blog)}
-              deleteBlog={() => deleteBlog(blog)}
-            />
-          </Togglable>
+        <div key={blog.id}>
+          <Blog
+            user={loggedIn?.username}
+            blog={blog}
+            likeBlog={() => likePost(blog)}
+            deleteBlog={() => deleteBlog(blog)}
+          />
         </div>
       )}
     </div>

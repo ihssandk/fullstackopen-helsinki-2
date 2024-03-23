@@ -1,31 +1,37 @@
 /* eslint-disable linebreak-style */
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
+import userEvent from '@testing-library/user-event'
 
-test('renders content', async () => {
+test('renders content', () => {
   const blog = {
     title: 'Component testing is done with react-testing-library',
-    author: 'me',
-    url: 'testing-react.com',
-    likes : 2,
-    user : '65e8ae5136fbb1a0ad2c5170'
+    author: 'tester',
+    likes : 10,
+    url : 'test.net'
+  }
+
+  const { container } = render(<Blog blog={blog}/>)
+  screen.debug()
+
+  const div = container.querySelector('.blog')
+  expect(div).toHaveTextContent(
+    'Component testing is done with react-testing-library')
+})
+
+test('clicking the button calls event handler once', async () => {
+  const blog = {
+    title: 'Component testing is done with react-testing-library',
+    author: 'tester',
+    likes : 10,
+    url : 'test.net'
   }
 
   const mockHandler = vi.fn()
   render(
     <Blog blog={blog} likeBlog={mockHandler} />  )
+
   const user = userEvent.setup()
-  const button = screen.getByText('view')
+  const button = screen.getByText('like')
   await user.click(button)
-  expect(mockHandler.mock.calls).toHaveLength(1)
-
-  render(<Blog blog={blog} />)
-
-  screen.debug()
-  const element = screen.getElementsByClassName('blog')
-  const element2 = screen.getByText('testing-react.com')
-
-  screen.debug(element2)
-  expect(element).toBeDefined()
-})
+  expect(mockHandler.mock.calls).toHaveLength(1)})
