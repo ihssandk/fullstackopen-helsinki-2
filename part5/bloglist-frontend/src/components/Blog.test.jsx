@@ -64,7 +64,7 @@ test('5.14', () => {
     url : 'test.net'
   }
 
-  const { container } = render( <Blog blog={blog} />)
+  render( <Blog blog={blog} />)
 
   const buttons = screen.queryByText('view')
   const button = buttons[0]
@@ -79,3 +79,21 @@ test('5.14', () => {
   expect(url).toBeDefined()
 
 })
+
+test('5.15', async () => {
+  const blog = {
+    title: 'Component testing is done with react-testing-library',
+    author: 'tester',
+    likes : 10,
+    url : 'test.net'
+  }
+
+  const mockHandler = vi.fn()
+  render(
+    <Blog blog={blog} likeBlog={mockHandler} />  )
+
+  const user = userEvent.setup()
+  const button = screen.getByText('like')
+  await user.click(button)
+  await user.click(button)
+  expect(mockHandler.mock.calls).toHaveLength(2)})
