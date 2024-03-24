@@ -26,7 +26,8 @@ const BlogForm = ({ createBlog , currUser }) => {
       <h2>Create a new blog</h2>
       <form onSubmit={addBlog}>
         <label>title
-          <input 
+          <input
+            id='title-input'
             placeholder='type a blog post title'
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}/>

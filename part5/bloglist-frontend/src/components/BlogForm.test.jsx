@@ -3,20 +3,25 @@ import { render, screen } from '@testing-library/react'
 import BlogForm from './BlogForm'
 import userEvent from '@testing-library/user-event'
 
-test('<BlogForm /> updates parent state and calls onSubmit', async () => {
-  const addBlog = vi.fn()
-  const user = userEvent.setup()
+test('5.13', async () => {
+  const createBlog = vi.fn()
 
-  render(<BlogForm createBlog={addBlog} />)
+  render(<BlogForm createBlog={createBlog} />)
 
-  const input = screen.getByPlaceholderText('type a blog post title')
+  const titleInput = screen.getByPlaceholderText('type a blog post title')
+  const authorInput = screen.getByPlaceholderText('who is the author?')
+  const urlInput = screen.getByPlaceholderText('add link to the post?')
   const sendButton = screen.getByText('create')
 
-  await user.type(input, 'testing a form...')
-  await user.click(sendButton)
+  await userEvent.type(titleInput, 'Testing a form...')
+  await userEvent.type(authorInput, 'tester')
+  await userEvent.type(urlInput, 'https://test.com')
+  await userEvent.click(sendButton)
 
-  expect(addBlog.mock.calls).toHaveLength(1)
-  expect(addBlog.mock.calls[0][0].content).toBe('testing a form...')
+  expect(createBlog.mock.calls).toHaveLength(1)
+  expect(createBlog.mock.calls[0][0].title).toBe('Testing a form...')
+  expect(createBlog.mock.calls[0][0].author).toBe('tester')
+  expect(createBlog.mock.calls[0][0].url).toBe('https://test.com')
 
-  console.log(addBlog.mock.calls)
+  console.log(createBlog.mock.calls)
 })
