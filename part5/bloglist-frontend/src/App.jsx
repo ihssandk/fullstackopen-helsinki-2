@@ -85,6 +85,7 @@ const App = () => {
         username
         <input
           type="text"
+          data-testid='username'
           value={username}
           name="Username"
           onChange={({ target }) => setUsername(target.value)}
@@ -94,6 +95,7 @@ const App = () => {
         password
         <input
           type="password"
+          data-testid='password'
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
@@ -126,7 +128,8 @@ const App = () => {
   const deleteBlog = async (b) => {
     if (window.confirm(`Are you sure you want to delete ${b.title}`)){
       blogService.deleteBlog(b.id , user.token)
-      blogs.splice(blogs.indexOf(b), 1)
+      const newList = await blogService.getAll()
+      setBlogs(newList)
     }
   }
 
