@@ -2,20 +2,20 @@ const { test,describe, expect ,beforeEach } = require('@playwright/test')
 const { loginWith , createBlog } = require('./helper')
 
 // 5.17
-describe('Blog app', () => {
-  beforeEach(async ({ page, request }) => {
-    await request.post('/api/testing/reset')
-    await request.post('/api/users', {
-      data: {
-        name: 'Matti Luukkainen',
-        username: 'mluukkai',
-        password: 'salainen'
-      }
+  describe('Blog app', () => {
+    beforeEach(async ({ page, request }) => {
+      await request.post('/api/testing/reset')
+      await request.post('/api/users', {
+        data: {
+          name: 'Matti Luukkainen',
+          username: 'mluukkai',
+          password: 'salainen'
+        }
+      })
+      await page.goto('/')
     })
-    await page.goto('/')
-  })
     
-    // 5.18
+// 5.18
     describe('Login', () => {
       test('succeeds with correct credentials', async ({ page }) => {
         await loginWith(page, 'mluukkai', 'salainen')
@@ -29,13 +29,25 @@ describe('Blog app', () => {
       })
     })
 
-  // 5.19
+// 5.19
     describe('when logged in', () => {
       beforeEach(async ({ page }) => {
         await loginWith(page, 'mluukkai', 'salainen')
       })
-      test('a new blog can be created', async ({ page }) => {
-        await createBlog(page,'test','tester','test.com', true)
-      }) 
-    })  
-  })
+        test('a new blog can be created', async ({ page }) => {
+          await createBlog(page,'test','tester','test.com', true)
+          await page.getByText('view').click()
+          await page.getByText('like').click() 
+        }) 
+        
+        // 5.20 - 5.21 - 5.22
+        
+        test('blog can be liked', async ({ page }) => {   
+          await createBlog(page,'test','tester','test.com', true)
+          await page.getByText('view').click()
+          await page.getByText('like').click()
+          await expect(page.getByText('likes : 1')).toBeVisible()
+        })
+    })
+
+    })
