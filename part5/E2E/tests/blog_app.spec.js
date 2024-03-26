@@ -1,16 +1,17 @@
 const { test,describe, expect ,beforeEach } = require('@playwright/test')
+const { loginWith , createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http:localhost:3001/api/testing/reset')
-    await request.post('http://localhost:3001/api/users', {
+    await request.post('/testing/reset')
+    await request.post('/users', {
       data: {
         name: 'Matti Luukkainen',
         username: 'mluukkai',
         password: 'salainen'
       }
     })
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
     
     test('front page can be opened', async ({ page }) => {
@@ -18,26 +19,31 @@ describe('Blog app', () => {
     await expect(locator).toBeVisible()
 
     })
+
     test('login succeeds', async ({ page }) => {
-        await page.getByTestId('username').fill('mluukkai')
-        await page.getByTestId('password').fill('salainen')
-        await page.getByRole('button', { name: 'login' }).click()
+        await loginWith(page, 'mluukkai', 'salainen')
         await expect(page.getByText('Matti Luukkainen logged-in')).toBeVisible()
     })
 
+    test('login fails with wrong password', async ({ page }) => {
+      await loginWith(page, 'mluukkai', 'wrong')
+
+        const errorDiv = await page.locator('.error')
+        await expect(errorDiv).toContainText('Incorrect username or password')
+  })
+
     describe('when logged in', () => {
         beforeEach(async ({ page }) => {
-            await page.getByTestId('username').fill('mluukkai')
-            await page.getByTestId('password').fill('salainen')
-            await page.getByRole('button', { name: 'login' }).click()
+          await loginWith(page, 'mluukkai', 'salainen')
         })
+
       test('a new blog can be created', async ({ page }) => {
-        await page.getByRole('button', { name: 'create new' }).click()
-        await page.getByTestId('title').fill('test blog')
-        await page.getByTestId('author').fill('tester')
-        await page.getByTestId('url').fill('test.com')
-        await page.getByRole('button', { name: 'create' }).click()
-        await expect(page.getByText('a new blog test blog by tester')).toBeVisible()
+        await createBlog(page,'test','tester','test.com', true)
         })
+        
+      // test('blog can be toggled', async ({ page }) => {
+      //   await page.getByRole('button', { name: 'view' }).click()
+      //   await expect(page.getByText('hide')).toBeVisible()
+      // })
     })  
 })
