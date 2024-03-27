@@ -52,11 +52,10 @@ const { loginWith , createBlog } = require('./helper')
     test('blog can be deleted', async ({ page }) => {
       await createBlog(page, 'test', 'tester', 'test.com', true);
       await page.getByRole('button', { name: 'view' }).click()
-      page.on('dialog', async dialog => {
-          console.log(dialog.message())
-          await dialog.accept();
-      })
-      await page.waitForSelector('text=test by tester', { hidden: true })
+      page.on('dialog', async dialog => { await dialog.accept()  })
+      await page.getByRole('button', { name: 'remove' }).click()
+      await page.goto('/')
+      await expect(page.getByText('test by tester')).not.toBeVisible() 
       })
       })
 
