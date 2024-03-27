@@ -12,6 +12,13 @@ const { loginWith , createBlog } = require('./helper')
           password: 'salainen'
         }
       })
+      await request.post('/api/users', {
+        data: {
+          name: 'additional tester',
+          username: 'tester',
+          password: 'test'
+        }
+      })
       await page.goto('/')
     })
     
@@ -50,13 +57,22 @@ const { loginWith , createBlog } = require('./helper')
   
 // 5.21    
     test('blog can be deleted', async ({ page }) => {
-      await createBlog(page, 'test', 'tester', 'test.com', true);
+      await createBlog(page, 'test', 'tester', 'test.com', true)
       await page.getByRole('button', { name: 'view' }).click()
       page.on('dialog', async dialog => { await dialog.accept()  })
       await page.getByRole('button', { name: 'remove' }).click()
       await page.goto('/')
       await expect(page.getByText('test by tester')).not.toBeVisible() 
       })
-      })
 
+// 5.22 
+    test('blog can only be deleted by creator', async ({ page  }) => {
+      await createBlog(page, 'test', 'tester', 'test.com', true)
+      await page.getByRole('button', { name: 'logout' }).click()  
+      await loginWith(page, 'tester', 'test')
+      await expect(page.getByText('additional tester logged-in')).toBeVisible() 
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByText('remove')).not.toBeVisible()  
+    })
+})
 })
