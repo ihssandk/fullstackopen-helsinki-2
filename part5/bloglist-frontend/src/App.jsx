@@ -127,9 +127,10 @@ const App = () => {
 
   const deleteBlog = async (b) => {
     if (window.confirm(`Are you sure you want to delete ${b.title}`)){
-      blogService.deleteBlog(b.id , user.token)
-      const newList = await blogService.getAll()
-      setBlogs(newList)
+      blogService.deleteBlog(b.id , user.token).then(async (res) =>
+      {const newList = await blogService.getAll()
+        setBlogs(newList)})
+
     }
   }
 

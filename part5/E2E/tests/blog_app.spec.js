@@ -40,14 +40,24 @@ const { loginWith , createBlog } = require('./helper')
           await page.getByText('like').click() 
         }) 
         
-        // 5.20 - 5.21 - 5.22
-        
-        test('blog can be liked', async ({ page }) => {   
-          await createBlog(page,'test','tester','test.com', true)
-          await page.getByText('view').click()
-          await page.getByText('like').click()
-          await expect(page.getByText('likes : 1')).toBeVisible()
-        })
+// 5.20
+    test('blog can be liked', async ({ page }) => {   
+      await createBlog(page,'test','tester','test.com', true)
+      await page.getByText('view').click()
+      await page.getByText('like').click()
+      await expect(page.getByText('likes : 1')).toBeVisible()
     })
+  
+// 5.21    
+    test('blog can be deleted', async ({ page }) => {
+      await createBlog(page, 'test', 'tester', 'test.com', true);
+      await page.getByRole('button', { name: 'view' }).click()
+      page.on('dialog', async dialog => {
+          console.log(dialog.message())
+          await dialog.accept();
+      })
+      await page.waitForSelector('text=test by tester', { hidden: true })
+      })
+      })
 
-    })
+})
