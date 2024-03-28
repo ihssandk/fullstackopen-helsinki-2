@@ -11,6 +11,7 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
         buttonLabel='view'
         cancelLabel='hide'
         ref={blogInfoRef}
+        className="blog-title"
       >
         <div>
           <div className="blog-title">{blog.title} by {blog.author}</div>

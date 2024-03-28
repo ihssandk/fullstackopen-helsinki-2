@@ -43,8 +43,8 @@ const { loginWith , createBlog } = require('./helper')
       })
         test('a new blog can be created', async ({ page }) => {
           await createBlog(page,'test','tester','test.com', true)
-          await page.getByText('view').click()
-          await page.getByText('like').click() 
+          const blogDiv =  page.locator('.blog-title')
+          await expect(blogDiv).toContainText(`test by tester`)
         }) 
         
 // 5.20
@@ -66,7 +66,7 @@ const { loginWith , createBlog } = require('./helper')
       })
 
 // 5.22 
-    test('blog can only be deleted by creator', async ({ page  }) => {
+    test('blog cannot be deleted by user who didnt create it', async ({ page  }) => {
       await createBlog(page, 'test', 'tester', 'test.com', true)
       await page.getByRole('button', { name: 'logout' }).click()  
       await loginWith(page, 'tester', 'test')
@@ -75,4 +75,27 @@ const { loginWith , createBlog } = require('./helper')
       await expect(page.getByText('remove')).not.toBeVisible()  
     })
 })
+
+//5.23
+test('blogs are listed by number of likes in descending order ', async({page}) => {
+  await loginWith(page, 'mluukkai', 'salainen');
+  await createBlog(page,'test0','tester0','test0.com', true)
+  await createBlog(page,'test1','tester1','test1.com', true)
+  await createBlog(page,'test2','tester2','test2.com', true)
+
+  await page.getByText('test2 by tester2').getByRole('button').click()
+  await page.getByRole('button', {name : 'like'}).click()
+  await page.getByRole('button', {name : 'like'}).click()
+  await page.getByRole('button' , {name : 'hide'}).click()
+
+  await page.getByText('test1 by tester1view').getByRole('button').click()
+  await page.getByRole('button' , {name : 'like'}).click()
+  await page.getByRole('button' , {name : 'hide'}).click()
+
+  const blogTitles = await page.$$eval('.blog-title', elements => elements.map(el => el.textContent));
+  expect(blogTitles[0]).toBe('test2 by tester2')
+  expect(blogTitles[1]).toBe('test1 by tester1')
+  expect(blogTitles[2]).toBe('test0 by tester0')
+})
+
 })
