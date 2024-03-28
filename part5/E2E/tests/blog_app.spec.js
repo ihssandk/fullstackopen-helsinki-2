@@ -84,7 +84,7 @@ test('blogs are listed by number of likes in descending order ', async({page}) =
   await createBlog(page,'test2','tester2','test2.com', true)
 
   await page.getByText('test2 by tester2').getByRole('button').click()
-  await page.getByRole('button', {name : 'like'}).click()
+  await page.getByRole('button', {name : 'like'}).click({timeout : 2000})
   await page.getByRole('button', {name : 'like'}).click()
   await page.getByRole('button' , {name : 'hide'}).click()
 
