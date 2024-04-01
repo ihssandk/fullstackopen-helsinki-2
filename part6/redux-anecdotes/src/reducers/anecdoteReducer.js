@@ -1,3 +1,4 @@
+import { createSlice } from '@reduxjs/toolkit'
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -19,52 +20,37 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-const anecdoteReducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
-
-  let idToLike, anecdoteToVote, changedAnecdote
-
-  switch(action.type) {
-    case 'NEW_ANECDOTE':
-      return [...state, action.payload]
-    case 'LIKE_ANECDOTE':
-      idToLike = action.payload.id
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      const content = action.payload
+  return [...state,
+    {content : content,
+      id : getId(),
+      votes : 0}]},
+    likeAnecdote(state, action) {
+      let idToLike, anecdoteToVote, changedAnecdote
+      idToLike = action.payload
       anecdoteToVote = state.find(n => n.id === idToLike)
       changedAnecdote = { 
         ...anecdoteToVote, 
-        votes: anecdoteToVote.votes + 1
-      }
-
-      const newList = state.map(anecdote =>
-        anecdote.id !== idToLike ? anecdote : changedAnecdote 
-        )
-      return newList.sort((a, b) => {
-          if (a.votes === b.votes) {
-            return a.id - b.id}
-          return b.votes - a.votes})
-    default:
-      return state
+      votes: anecdoteToVote.votes + 1
     }
-}
+    
+    const newList = state.map(anecdote =>
+      anecdote.id !== idToLike ? anecdote : changedAnecdote 
+      )
+      return newList.sort((a, b) => {
+        if (a.votes === b.votes) {
+          return a.id - b.id}
+          return b.votes - a.votes})
+        }
+      },
+    })
 
-export const createAnecdote = (content) => {
- return {
-  type : 'NEW_ANECDOTE',
-  payload : {
-    content : content,
-    id : getId(),
-    votes : 0
-  }
- }
-}
-
-export const likeAnecdote = (id) => {
- return {
-  type : 'LIKE_ANECDOTE',
-  payload : {id}
- }
-}
-
-export default anecdoteReducer
+export const { createAnecdote , likeAnecdote } = anecdoteSlice.actions
+export default anecdoteSlice.reducer
+        
 
