@@ -1,9 +1,18 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { likeAnecdote } from '../reducers/anecdoteReducer'
+import { showNotificationforVote , hideNotification} from '../reducers/notificationReducer'
+
 const AnecdoteList = () => {
   const dispatch = useDispatch()
-  const vote = (id) => {
+  const hideNotificationWithDelay = () => (dispatch) => {
+    setTimeout(() => {
+      dispatch(hideNotification())
+    }, 2000)
+  }
+  const vote = (id, content) => {
       dispatch(likeAnecdote(id))
+      dispatch(showNotificationforVote(content))
+      dispatch(hideNotificationWithDelay())
   }
   const anecdotes = useSelector(state => {
     if ( state.filter === '' ) {
@@ -23,7 +32,7 @@ const AnecdoteList = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote.id , anecdote.content)}>vote</button>
           </div>
         </div>
       )}

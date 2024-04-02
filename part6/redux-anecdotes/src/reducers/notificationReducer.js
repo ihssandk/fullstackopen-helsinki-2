@@ -1,24 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   message: null,
-};
+}
 
 const notificationSlice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    showNotification(state, action) {
-      return {message : action.payload}
+    showNotificationForNew(state, action) {
+      let currAnecdote
+      currAnecdote = action.payload
+      return {message : `You just added '${currAnecdote}'`}
+    },
+    showNotificationforVote(state, action) {
+      let currAnecdote
+      currAnecdote = action.payload
+      return {message : `You just upvoted '${currAnecdote}'`}
     },
     hideNotification(state, action) {
-      return null
+      return {message :null}
     },
   },
-});
+})
 
-export const { showNotification , hideNotification } = notificationSlice.actions;
-export default notificationSlice.reducer;
+
+export const { showNotificationForNew , showNotificationforVote , hideNotification } = notificationSlice.actions
+export default notificationSlice.reducer
 
           
   

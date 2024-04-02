@@ -24,33 +24,34 @@ const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState,
   reducers: {
+
     createAnecdote(state, action) {
       const content = action.payload
-  return [...state,
-    {content : content,
-      id : getId(),
-      votes : 0}]},
+      return [...state,
+        {content : content,
+          id : getId(),
+          votes : 0}]
+        },
+
     likeAnecdote(state, action) {
       let idToLike, anecdoteToVote, changedAnecdote
       idToLike = action.payload
       anecdoteToVote = state.find(n => n.id === idToLike)
       changedAnecdote = { 
         ...anecdoteToVote, 
-      votes: anecdoteToVote.votes + 1
-    }
-    
-    const newList = state.map(anecdote =>
-      anecdote.id !== idToLike ? anecdote : changedAnecdote 
-      )
-      return newList.sort((a, b) => {
-        if (a.votes === b.votes) {
-          return a.id - b.id}
-          return b.votes - a.votes})
+        votes: anecdoteToVote.votes + 1
         }
-      },
+      const newList = state.map(anecdote =>
+          anecdote.id !== idToLike ? anecdote : changedAnecdote 
+      )
+        return newList.sort((a, b) => {
+          if (a.votes === b.votes) {
+            return a.id - b.id}
+            return b.votes - a.votes})
+          }},
     })
 
-export const { createAnecdote , likeAnecdote } = anecdoteSlice.actions
+export const { createAnecdote , likeAnecdote , currAnecdote} = anecdoteSlice.actions
 export default anecdoteSlice.reducer
         
 

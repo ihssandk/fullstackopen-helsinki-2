@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { showNotification , hideNotification } from '../reducers/notificationReducer'
+import { showNotificationforVote , showNotificationForNew } from '../reducers/notificationReducer'
 
 const Notification = () => {
   const style = {
@@ -7,11 +7,9 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1
   }
-  const dispatch = useDispatch()
-  dispatch(showNotification('yes'))
   const notification = useSelector(state => {
-    console.log(state.anecdotes)
     console.log(state.notification)
+    console.log(state)
    if(state.notification)
     {return state.notification.message}
     return null
