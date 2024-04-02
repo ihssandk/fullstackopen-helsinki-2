@@ -1,6 +1,5 @@
-import { useSelector } from 'react-redux'
-import { notificationChange } from '../reducers/notificationReducer'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { showNotification , hideNotification } from '../reducers/notificationReducer'
 
 const Notification = () => {
   const style = {
@@ -8,17 +7,23 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1
   }
+  const dispatch = useDispatch()
+  dispatch(showNotification('yes'))
   const notification = useSelector(state => {
-    console.log(state)
-    return 'something something'
-  
-}
+    console.log(state.anecdotes)
+    console.log(state.notification)
+   if(state.notification)
+    {return state.notification.message}
+    return null
+  }
   )
-  return (
+  if (notification)
+  {return (
     <div style={style}>
       {notification}
     </div>
-  )
+  )}
+
 }
 
 export default Notification
