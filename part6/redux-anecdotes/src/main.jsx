@@ -12,6 +12,11 @@ const store = configureStore({
     filter: filterReducer,
     notification:notificationReducer}})
 
+
+  // anecdoteService.getAll().then(anecdotes =>
+  //   store.dispatch(setAnecdotes(anecdotes))
+  //   )
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <App />
