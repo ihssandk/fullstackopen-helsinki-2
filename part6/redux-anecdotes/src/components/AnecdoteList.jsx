@@ -32,7 +32,7 @@ const AnecdoteList = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id , anecdote.content)}>vote</button>
+            <button onClick={() => vote( anecdote.id , anecdote.content )}>vote</button>
           </div>
         </div>
       )}
