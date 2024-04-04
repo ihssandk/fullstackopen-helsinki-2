@@ -1,5 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { showNotificationforVote , showNotificationForNew } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
 
 const Notification = () => {
   const style = {
@@ -7,16 +6,18 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1
   }
+
   const notification = useSelector(state => {
     console.log(state.notification)
     console.log(state)
-   if(state.notification)
-    {return state.notification.message}
-    return null
-  }
-  )
-  if (notification)
-  {return (
+   if(state.notification) {
+      return state.notification.message
+    }
+      return null
+  })
+
+  if (notification) {
+    return (
     <div style={style}>
       {notification}
     </div>
