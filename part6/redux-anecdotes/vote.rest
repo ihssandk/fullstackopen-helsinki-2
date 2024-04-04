@@ -1,0 +1,9 @@
+PUT http://localhost:3001/anecdotes/91f8
+Content-Type: application/json
+
+{
+    "content" : "test",
+    "id" : "91f8",
+    "votes" : 5
+
+}
