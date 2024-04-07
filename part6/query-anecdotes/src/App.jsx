@@ -2,11 +2,11 @@ import AnecdoteForm from './components/AnecdoteForm'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAnecdotes , updateAnecdote} from './requests'
 import Notification from  './components/Notification'
-import { useState } from 'react'
+import { useNotificationDispatch } from './NotificationContext'
+ 
 
 const App = () => {
-  
-  const [current, setCurrent] = useState('')
+  const dispatch = useNotificationDispatch()
   const queryClient = useQueryClient()
   
   const updateAnecdoteMutation = useMutation({ 
@@ -18,13 +18,12 @@ const App = () => {
         ? updatedAnecdote : anec))
       }
     })
-     
-      const handleVote = (anecdote) => {
-        updateAnecdoteMutation.mutate({...anecdote, votes : anecdote.votes + 1})
-        anecdote.votes += 1
-        console.log(anecdote)
-        setCurrent(anecdote.content)
-      }
+
+  const handleVote = (anecdote) => {
+    updateAnecdoteMutation.mutate({...anecdote, votes : anecdote.votes + 1})
+    anecdote.votes += 1
+    dispatch({type: 'VOTE' ,payload : anecdote.content})
+  }
       
   const result = useQuery({
     queryKey: ['anecdotes'],
@@ -40,26 +39,26 @@ const App = () => {
     return <div>loading data...</div>
 
   const anecdotes = result.data
-
   return (
-    <div>
-      <h3>Anecdote app</h3>
+
+      <div>
+        <h3>Anecdote app</h3>
     
-    <Notification anecdote={current} type='VOTE'/>
-    <AnecdoteForm />
-    
-      {anecdotes.map(anecdote =>
-        <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
+      <Notification />
+      <AnecdoteForm />
+      
+        {anecdotes.map(anecdote =>
+          <div key={anecdote.id}>
+            <div>
+              {anecdote.content}
+            </div>
+            <div>
+              has {anecdote.votes}
+              <button onClick={() => handleVote(anecdote)}>vote</button>
+            </div>
           </div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => handleVote(anecdote)}>vote</button>
-          </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
   )
 }
 

@@ -1,19 +1,7 @@
-import React, { useReducer ,useEffect } from 'react';
+import React, { useContext ,useEffect } from 'react'
+import NotificationContext from '../NotificationContext';
 
-const notificationReducer = (state, action) => {
-  switch (action.type) {
-    case 'NEW':
-      return `You just added '${action.payload}'`;
-    case 'VOTE':
-      return `You just voted '${action.payload}'`;
-    case 'ERROR':
-      return `You just committed an error`;
-    default:
-      return null;
-  }
-};
-
-const Notification = ({ type, anecdote }) => {
+const Notification = () => {
   const style = {
     border: 'solid',
     padding: 10,
@@ -21,17 +9,15 @@ const Notification = ({ type, anecdote }) => {
     marginBottom: 5
   };
 
-  const [notification, notificationDispatch] = useReducer(notificationReducer, null);
+  const [notification, dispatch] = useContext(NotificationContext)
 
   useEffect(() => {
-      notificationDispatch({ type: type, payload: anecdote })
-      setTimeout(() => {
-        notificationDispatch({type : null , payload : null});
-      }, 5000)
+    setTimeout(() => {
+      dispatch({type: null, payload : null})
+    }, 5000)
+    }, [notification,dispatch])
   
-  }, [type, anecdote])
-  
-  if (anecdote.length> 0 && notification) {
+  if (notification ) {
       return (
         <div style={style}>
           {notification}
