@@ -7,17 +7,20 @@ const AnecdoteForm = () => {
   const newAnecdoteMutation = useMutation({ 
     mutationFn: createAnecdote,
     onSuccess: (newAnecdote) => {
-      const anecdotes = queryClient.getQueryData(['anecdotes'])
-      queryClient.setQueryData(['anecdotes'], [...anecdotes , newAnecdote])
+        const anecdotes = queryClient.getQueryData(['anecdotes'])
+        queryClient.setQueryData(['anecdotes'], [...anecdotes , newAnecdote])
+        dispatch({type : 'NEW' , payload: newAnecdote.content})
+    },
+    onError: (error) => {
+        dispatch({type: 'ERROR'}) 
     }
   })
 
-  const onCreate = (event) => {
+  const onCreate =  async (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    newAnecdoteMutation.mutate({ content : content, votes : 0 })
-    dispatch({type : 'NEW' , payload: content})
+    newAnecdoteMutation.mutate({ content: content, votes: 0 });
 }
 
   return (
