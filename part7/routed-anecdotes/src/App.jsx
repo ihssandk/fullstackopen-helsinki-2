@@ -18,11 +18,8 @@ const Menu = () => {
   )
 }
 
-const Anecdote = ({ anecdotes }) => {
-
-  const match = useMatch('/anecdotes/:id')
-  const anecdote = match 
-  ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id))    : null 
+const Anecdote = ({ anecdote }) => {
+  
   return (
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
@@ -71,7 +68,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
   const navigate = useNavigate()
-
+  
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -85,7 +82,8 @@ const CreateNew = (props) => {
     setInfo('')
     navigate('/')
   }
-
+  
+  
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -126,6 +124,10 @@ const App = () => {
       id: 2
     }
   ])
+  const match = useMatch('/anecdotes/:id')
+  const anecdote = match 
+  ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id))
+  : null 
 
   const [notification, setNotification] = useState('')
 
@@ -151,20 +153,20 @@ const App = () => {
   }
 
   return (
-    <Router>
+
       <div>
         <h1>Software anecdotes</h1>
         <Menu />
          <div>{notification}</div>
           <Routes>
-            <Route path="/anecdotes/:id" element={<Anecdote anecdotes={anecdotes} />} />  
+            <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />  
             <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />}/>
             <Route path='/create' element={<CreateNew addNew={addNew} />}/>
             <Route path='/about' element={<About />}/>
           </Routes>
         <Footer />
       </div>
-    </Router>
+    
   )
 }
 
