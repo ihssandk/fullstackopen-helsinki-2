@@ -16,18 +16,18 @@ const useField = (type) => {
 }
 
 const useResource = (baseUrl) => {
-  const [resources, setResources] = useState([]);
+  const [resources, setResources] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!baseUrl) return;
+      if (!baseUrl) return
       try {
-        const response = await axios.get(baseUrl);
-        setResources(response.data);
+        const response = await axios.get(baseUrl)
+        setResources(response.data)
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error)
       }
-    };
+    }
     fetchData()
   }, [baseUrl])
 
@@ -40,7 +40,7 @@ const useResource = (baseUrl) => {
       console.error('Error creating resource:', error)
       return null
     }
-  };
+  }
 
   const service = {
     create,
