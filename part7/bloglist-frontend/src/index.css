@@ -1,0 +1,30 @@
+  .error {
+    color: red;
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .notification {
+    color: rgb(23, 173, 80);
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  button{
+    margin-top: 5px;
+    cursor: pointer;
+    font-style: oblique;
+  }
+
+  input {
+    margin-bottom: 5px;
+    margin-left: 5px;
+    border-style: groove;
+  }
