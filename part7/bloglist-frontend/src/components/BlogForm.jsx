@@ -2,10 +2,11 @@
 /* eslint-disable no-trailing-spaces */
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { createBlog  } from '../reducers/blogReducer'
-import blogService from '../services/blogs'
-const BlogForm = ({ createBlog , currUser }) => {
+import { createBlog } from '../reducers/blogReducer'
+const BlogForm = ({ currUser }) => {
+
   const dispatch = useDispatch()
+
   const [newTitle, setNewTitle]= useState('')
   const [newAuthor, setNewAuthor]= useState('')
   const [newUrl, setNewUrl]= useState('')
