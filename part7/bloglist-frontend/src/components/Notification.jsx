@@ -1,14 +1,29 @@
 /* eslint-disable linebreak-style */
-const Notification = ({ message , color }) => {
-  if (message === null) {
-    return null
-  }
+import { useSelector } from 'react-redux'
 
-  return (
-    <div className={color==='green' ? 'notification' : 'error'}>
-      {message}
-    </div>
-  )
+const Notification = () => {
+  const notification = useSelector(state => {
+    console.log(state.notification.message)
+    if(state.notification) {
+      return state.notification.message
+    }
+    return null
+  })
+  const color = useSelector(state => {
+    console.log(state.notification.color)
+    if(state.notification) {
+      return state.notification.color
+    }
+    return null
+  })
+
+  if (notification) {
+    return (
+      <div className={color==='green' ? 'notification' : 'error'}>
+        {notification}
+      </div>
+    )
+  }
 }
 
 export default Notification

@@ -1,4 +1,5 @@
 /* eslint-disable linebreak-style */
+import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -6,13 +7,11 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-
+import { setNotification } from './reducers/notificationReducer'
 const App = () => {
-
+  const dispatch = useDispatch()
   const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [message, setMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -38,7 +37,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
-  }, [message,errorMessage])
+  }, [])
 
   useEffect(() => {
     blogService.getAll()
@@ -63,14 +62,11 @@ const App = () => {
       )
 
       blogService.setToken(user.token)
-      setUser(user) // Set the user after successful login
+      setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Incorrect username or password, Retry')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setNotification('Incorrect username or passwor, retry', 'red', 10))
     }
   }
 
@@ -111,10 +107,7 @@ const App = () => {
       .create(blogObject, user.token)
       .then(returnedObj =>
       {setBlogs(blogs.concat(returnedObj))
-        setMessage(`a new blog ${blogObject.title} by ${blogObject.author}`)
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+        dispatch(setNotification(`a new blog ${returnedObj.title} by ${returnedObj.author}`, 'green', 10))
       }
       )
   }
@@ -137,12 +130,7 @@ const App = () => {
   return (
     <div>
       <h1>login</h1>
-      <Notification
-        color='red'
-        message={errorMessage} />
-      <Notification
-        color='green'
-        message={message} />
+      <Notification />
       {user === null ?
         loginForm() :
         <div>
