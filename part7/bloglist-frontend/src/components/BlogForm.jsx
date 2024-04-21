@@ -1,21 +1,23 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable no-trailing-spaces */
 import { useState } from 'react'
-
+import { useDispatch } from 'react-redux'
+import { createBlog  } from '../reducers/blogReducer'
+import blogService from '../services/blogs'
 const BlogForm = ({ createBlog , currUser }) => {
-
+  const dispatch = useDispatch()
   const [newTitle, setNewTitle]= useState('')
   const [newAuthor, setNewAuthor]= useState('')
   const [newUrl, setNewUrl]= useState('')
 
   const addBlog = (event) => {
     event.preventDefault()
-    createBlog({
+    dispatch(createBlog({
       title : newTitle,
       author : newAuthor,
       url : newUrl,
       user: currUser
-    })
+    }))
     setNewAuthor('')
     setNewTitle('')
     setNewUrl('')
