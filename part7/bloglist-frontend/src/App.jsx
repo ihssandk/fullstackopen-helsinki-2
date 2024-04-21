@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
