@@ -97,18 +97,6 @@ const App = () => {
     </form>
   )
 
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject, user.token)
-      .then(data =>
-      {
-        console.log(data)
-        dispatch(setNotification(`a new blog ${data.title} by ${data.author}`, 'green', 10))
-      }
-      )
-  }
-
   const likePost= async (b) => {
     blogService.likingBlog(b.id, { ...b,likes : b.likes +1 })
     b.likes = b.likes +1
@@ -140,7 +128,6 @@ const App = () => {
             cancelLabel='cancel'
             ref={blogFormRef}>
             <BlogForm
-              createBlog={addBlog}
               currUser={loggedIn?.id}
             />
           </Togglable>

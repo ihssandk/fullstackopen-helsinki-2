@@ -1,7 +1,7 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-trailing-spaces */
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+
 const BlogForm = ({ currUser }) => {
 
   const dispatch = useDispatch()
@@ -20,6 +20,7 @@ const BlogForm = ({ currUser }) => {
     event.target.title.value = ''
     event.target.author.value = ''
     event.target.url.value = ''
+    dispatch(setNotification(`a new blog ${title} by ${author}`, 'green', 10))
   }
 
   return (
@@ -44,12 +45,12 @@ const BlogForm = ({ currUser }) => {
         <label>url
           <input
             data-testid='url'
-            placeholder='add link to the post?' 
+            placeholder='add link to the post?'
             name = 'url'/>
         </label>
         <br />
         <button type="submit">create</button>
-      </form> 
+      </form>
     </div>
   )
 }
