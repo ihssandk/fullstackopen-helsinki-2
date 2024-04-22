@@ -1,27 +1,25 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable no-trailing-spaces */
-import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 const BlogForm = ({ currUser }) => {
 
   const dispatch = useDispatch()
 
-  const [newTitle, setNewTitle]= useState('')
-  const [newAuthor, setNewAuthor]= useState('')
-  const [newUrl, setNewUrl]= useState('')
-
   const addBlog = (event) => {
     event.preventDefault()
+    const title = event.target.title.value
+    const author = event.target.author.value
+    const url = event.target.url.value
     dispatch(createBlog({
-      title : newTitle,
-      author : newAuthor,
-      url : newUrl,
+      title,
+      author,
+      url,
       user: currUser
     }))
-    setNewAuthor('')
-    setNewTitle('')
-    setNewUrl('')
+    event.target.title.value = ''
+    event.target.author.value = ''
+    event.target.url.value = ''
   }
 
   return (
@@ -33,24 +31,21 @@ const BlogForm = ({ currUser }) => {
             data-testid='title'
             id='title-input'
             placeholder='type a blog post title'
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}/>
+            name='title'/>
         </label>
         <br />
         <label>author
           <input
             data-testid='author'
             placeholder='who is the author?'
-            value={newAuthor}
-            onChange={(e) => setNewAuthor(e.target.value)}/>
+            name='author'/>
         </label>
         <br />
         <label>url
           <input
             data-testid='url'
             placeholder='add link to the post?' 
-            value={newUrl}
-            onChange={(e) => setNewUrl(e.target.value)} />
+            name = 'url'/>
         </label>
         <br />
         <button type="submit">create</button>

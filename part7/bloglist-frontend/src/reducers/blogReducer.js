@@ -26,9 +26,9 @@ export const initializeBlogs = () => {
     dispatch(setBlogs(blogs))
   }}
 
-export const createBlog = content => {
+export const createBlog = blogInfo => {
   return async dispatch => {
-    const newBlog = await blogService.create(content)
+    const newBlog = await blogService.create(blogInfo)
     dispatch(appendBlogs(newBlog))
   }}
 

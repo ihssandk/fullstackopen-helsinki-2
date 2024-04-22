@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux'
+import { useSelector , useDispatch } from 'react-redux'
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -8,15 +8,25 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { initializeBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
+
 const App = () => {
+
   const dispatch = useDispatch()
   const blogFormRef = useRef()
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [loggedIn,setLoggedIn] = useState(null)
   const [likeUpdate, setLikeUpdate] = useState(false)
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogs = useSelector(state => {
+    return state.blogs
+  }
+  )
 
   useEffect(() => {
     loginService.users()
@@ -35,20 +45,6 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [dispatch])
-
-  useEffect(() => {
-    blogService.getAll()
-      .then(blogs => {
-        blogs.sort((a, b) => {
-          if (a.likes === b.likes) {
-            return a.id - b.id}
-          return b.likes - a.likes})
-        setBlogs(blogs)
-      })
-  }, [likeUpdate])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -66,7 +62,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      dispatch(setNotification('Incorrect username or passwor, retry', 'red', 10))
+      dispatch(setNotification('Incorrect username or password, please retry', 'red', 10))
     }
   }
 
@@ -105,9 +101,10 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject, user.token)
-      .then(returnedObj =>
-      {setBlogs(blogs.concat(returnedObj))
-        dispatch(setNotification(`a new blog ${returnedObj.title} by ${returnedObj.author}`, 'green', 10))
+      .then(data =>
+      {
+        console.log(data)
+        dispatch(setNotification(`a new blog ${data.title} by ${data.author}`, 'green', 10))
       }
       )
   }
@@ -120,10 +117,7 @@ const App = () => {
 
   const deleteBlog = async (b) => {
     if (window.confirm(`Are you sure you want to delete ${b.title}`)){
-      blogService.deleteBlog(b.id , user.token).then(async (res) =>
-      {const newList = await blogService.getAll()
-        setBlogs(newList)})
-
+      blogService.deleteBlog(b.id , user.token)
     }
   }
 
