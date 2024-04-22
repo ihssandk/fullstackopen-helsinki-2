@@ -6,7 +6,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-import { initializeBlogs } from './reducers/blogReducer'
+import { initializeBlogs , likeBlog , deleteBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
@@ -98,14 +98,12 @@ const App = () => {
   )
 
   const likePost= async (b) => {
-    blogService.likingBlog(b.id, { ...b,likes : b.likes +1 })
-    b.likes = b.likes +1
-    setLikeUpdate(!likeUpdate)
+    dispatch(likeBlog(b.id,{ ...b , likes : b.likes + 1 }))
   }
 
-  const deleteBlog = async (b) => {
+  const deletePost = async (b) => {
     if (window.confirm(`Are you sure you want to delete ${b.title}`)){
-      blogService.deleteBlog(b.id , user.token)
+      dispatch(deleteBlog(b.id))
     }
   }
 
@@ -141,7 +139,7 @@ const App = () => {
             user={loggedIn?.username}
             blog={blog}
             likeBlog={() => likePost(blog)}
-            deleteBlog={() => deleteBlog(blog)}
+            deleteBlog={() => deletePost(blog)}
           />
         </div>
       )}

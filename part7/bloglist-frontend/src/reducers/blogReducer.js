@@ -32,9 +32,16 @@ export const createBlog = blogInfo => {
     dispatch(appendBlogs(newBlog))
   }}
 
-export const likeBlog = idToLike => {
+export const likeBlog = (idToLike,updatedObj) => {
   return async dispatch => {
-    await blogService.update(idToLike)
+    await blogService.likingBlog(idToLike,updatedObj)
+    const blogs = await blogService.getAll()
+    dispatch(setBlogs(blogs))
+  }
+}
+export const deleteBlog = idToDelete => {
+  return async dispatch => {
+    await blogService.deleteBlog(idToDelete)
     const blogs = await blogService.getAll()
     dispatch(setBlogs(blogs))
   }
