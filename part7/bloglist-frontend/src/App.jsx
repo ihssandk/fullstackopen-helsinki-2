@@ -1,40 +1,48 @@
 import { useSelector , useDispatch } from 'react-redux'
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
 import { initializeBlogs , likeBlog , deleteBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
+import { setUser, logoutUser , setLoggedInUser  } from './reducers/userReducer'
 
 const App = () => {
 
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.user)
+  const loggedIn = useSelector((state) => state.user.loggedInUser)
   const blogFormRef = useRef()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-  const [loggedIn,setLoggedIn] = useState(null)
-  const [likeUpdate, setLikeUpdate] = useState(false)
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    const username = event.target.username.value
+    const password = event.target.password.value
+    try {
+      const user = await loginService.login({
+        username, password
+      })
 
-  useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [dispatch])
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
 
-  const blogs = useSelector(state => {
-    return state.blogs
+      blogService.setToken(user.token)
+      dispatch(setUser(user))
+    } catch (exception) {
+      dispatch(setNotification('Incorrect username or password, please retry', 'red', 10))
+    }
   }
-  )
 
   useEffect(() => {
     loginService.users()
       .then(users => {
         const loggedInUser = users.find(listUser => listUser.username === user?.username)
         if (loggedInUser) {
-          setLoggedIn(loggedInUser)}
-      })}, [user?.username])
+          dispatch(setLoggedInUser(user))}
+      })}, [dispatch, user, user?.username])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -45,32 +53,6 @@ const App = () => {
     }
   }, [])
 
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username, password,
-      })
-
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(setNotification('Incorrect username or password, please retry', 'red', 10))
-    }
-  }
-
-  const logout = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
-  }
-
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -78,9 +60,7 @@ const App = () => {
         <input
           type="text"
           data-testid='username'
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
+          name="username"
         />
       </div>
       <div>
@@ -88,13 +68,25 @@ const App = () => {
         <input
           type="password"
           data-testid='password'
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
+          name="password"
         />
       </div>
       <button type="submit">login</button>
     </form>
+  )
+
+  const logout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    dispatch(logoutUser())
+  }
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogs = useSelector(state => {
+    return state.blogs
+  }
   )
 
   const likePost= async (b) => {
