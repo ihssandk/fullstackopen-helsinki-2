@@ -1,20 +1,23 @@
 import { useSelector , useDispatch } from 'react-redux'
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import Users from './components/Users'
 import loginService from './services/login'
 import { initializeBlogs , likeBlog , deleteBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
-import { setUser, logoutUser, userFromList } from './reducers/userReducer'
+import { setUser, logoutUser } from './reducers/userReducer'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
+  const padding = {
+    padding: 5
+  }
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
   const blogFormRef = useRef()
-  const [loggedIn , setLoggedIn] = useState(null)
-  console.log(loggedIn)
   const handleLogin = async (event) => {
     event.preventDefault()
     const username = event.target.username.value
@@ -74,43 +77,60 @@ const App = () => {
     }
   }
 
-  return (
-    <div>
-      <h1>login</h1>
-      <Notification />
-      {user === null ?
-        loginForm() :
-        <div>
-          <span>
-            {user?.name} logged-in
-          </span>
-          <button
-            type='button'
-            onClick={logout}>logout
-          </button>
-          <Togglable
-            buttonLabel='create new'
-            cancelLabel='cancel'
-            ref={blogFormRef}>
-            <BlogForm
-              currUser={userFromList(user).id}
+  const Blogs = () => {
+    return (
+      <div>
+        { user && <Togglable
+          buttonLabel='create new'
+          cancelLabel='cancel'
+          ref={blogFormRef}>
+          <BlogForm/>
+        </Togglable> }
+        <h2>blogs</h2>
+        {blogs.map(blog =>
+          <div key={blog.id}>
+            <Blog
+              user={user?.username}
+              blog={blog}
+              likeBlog={() => likePost(blog)}
+              deleteBlog={() => deletePost(blog)}
             />
-          </Togglable>
-        </div>
-      }
+          </div>
+        )}
+      </div>
+    )
+  }
 
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <div key={blog.id}>
-          <Blog
-            user={user?.username}
-            blog={blog}
-            likeBlog={() => likePost(blog)}
-            deleteBlog={() => deletePost(blog)}
-          />
-        </div>
-      )}
-    </div>
+  return (
+    <Router >
+      <div>
+        <Link style={padding} to="/">home</Link>
+        <Link style={padding} to="/users">users</Link>
+      </div>
+      <div>
+        <h1>login</h1>
+        <Notification />
+        {user === null ?
+          loginForm() :
+          <div>
+            <span>
+              {user?.name} logged-in
+            </span>
+            <button
+              type='button'
+              onClick={logout}>logout
+            </button>
+          </div>
+        }
+
+        <Routes>
+          <Route path="/" element={<Blogs />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
+      </div>
+
+
+    </Router>
   )
 }
 
