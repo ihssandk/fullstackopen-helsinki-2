@@ -1,23 +1,36 @@
 import { createSlice } from '@reduxjs/toolkit'
+import blogService from '../services/blogs'
+import loginService from '../services/login'
+const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+blogService.setToken(JSON.parse(loggedUserJSON).token)
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    user: null,
-  },
+  initialState: JSON.parse(loggedUserJSON) ,
   reducers: {
     setUser(state, action) {
-      state.user = action.payload
+      const userInfo = action.payload
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(userInfo)
+      )
+      blogService.setToken(userInfo.token)
+      return userInfo
     },
-    logoutUser(state) {
-      state.user = null
-    },
-    setLoggedInUser(state, action) {
-      state.loggedInUser = action.payload
+    logoutUser(state, action) {
+      window.localStorage.removeItem('loggedBlogappUser')
+      return null
     },
   },
 })
 
-export const { setUser, logoutUser , setLoggedInUser } = userSlice.actions
+export const { setUser, logoutUser } = userSlice.actions
+
+export const userFromList = () => async (dispatch, getState) => {
+
+  const state = getState()
+  const users = await loginService.users()
+  const loggedInUser = users.find(listUser => listUser.username === state.user.username)
+  console.log(loggedInUser)
+  return loggedInUser }
 
 export default userSlice.reducer

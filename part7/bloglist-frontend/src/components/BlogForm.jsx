@@ -1,21 +1,23 @@
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { userFromList } from '../reducers/userReducer'
 
-const BlogForm = ({ currUser }) => {
 
+const BlogForm =  () => {
   const dispatch = useDispatch()
-
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
     const title = event.target.title.value
     const author = event.target.author.value
     const url = event.target.url.value
+    const loggedInUser = await dispatch(userFromList())
+    const user = loggedInUser.id
     dispatch(createBlog({
       title,
       author,
       url,
-      user: currUser
+      user
     }))
     event.target.title.value = ''
     event.target.author.value = ''
