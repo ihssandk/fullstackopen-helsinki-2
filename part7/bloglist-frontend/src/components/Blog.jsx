@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { likeBlog , deleteBlog } from '../reducers/blogReducer'
+
 const Blog = ({ user }) => {
   const navigate = useNavigate()
   const dispatch =useDispatch()
@@ -23,7 +24,7 @@ const Blog = ({ user }) => {
   return (
     <div className='blog' style={{ border: '1px dotted rgba(0, 0, 0, 1)', padding: '5px', marginBottom: '5px' }}>
       <div>
-        <h2 className="blog-title">{blog.title}</h2>
+        <h2 >{blog.title}</h2>
         <a href={blog.url}> {blog.url}</a>
         <div> {blog.likes} likes
           <button type='button' onClick={() => likePost(blog)}>like</button>
@@ -33,6 +34,8 @@ const Blog = ({ user }) => {
           <button onClick={() => deletePost(blog)} style={{ background: '#0ed2ff' }}>remove</button>
         )
         }
+        <h3>comments</h3>
+        {blog.comments?.map(comment => <li key={Math.floor(Math.random()*1000)}>{comment}</li>)}
       </div>
 
     </div>

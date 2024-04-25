@@ -93,14 +93,20 @@ const App = () => {
     <Router >
       <div>
 
-        <nav style={{ display: 'flex', justifyContent : 'space-between',backgroundColor: '#E3E3E3' }}>
+        <nav style={{ display: 'flex', justifyContent : 'space-between', backgroundColor: '#E3E3E3' , padding : '10px' }}>
           <div >
             <Link style={{ marginRight: '5px' }} to="/">blogs</Link>
             <Link style={{ marginLeft: '5px' }} to="/users">users</Link>
           </div>
           <div>
             {user === null ?
-              (<><h1>login</h1><div>{loginForm()} </div></>) :
+              (
+                <div>
+                  <><h1>login</h1>
+                    <div>{loginForm()} </div></>
+                </div>
+              )
+              :
               <div>
                 <span>
                   {user?.name} logged-in
