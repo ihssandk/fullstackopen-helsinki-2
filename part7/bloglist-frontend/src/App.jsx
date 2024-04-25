@@ -13,9 +13,7 @@ import { setUser, logoutUser } from './reducers/userReducer'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
-  const padding = {
-    padding: 5
-  }
+
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
   const blogFormRef = useRef()
@@ -94,23 +92,28 @@ const App = () => {
   return (
     <Router >
       <div>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
-      </div>
-      <div>
-        <Notification />
-        {user === null ?
-          (<><h1>login</h1><div>{loginForm()} </div></>) :
-          <div>
-            <span>
-              {user?.name} logged-in
-            </span>
-            <button
-              type='button'
-              onClick={logout}>logout
-            </button>
+
+        <nav style={{ display: 'flex', justifyContent : 'space-between',backgroundColor: '#E3E3E3' }}>
+          <div >
+            <Link style={{ marginRight: '5px' }} to="/">blogs</Link>
+            <Link style={{ marginLeft: '5px' }} to="/users">users</Link>
           </div>
-        }
+          <div>
+            {user === null ?
+              (<><h1>login</h1><div>{loginForm()} </div></>) :
+              <div>
+                <span>
+                  {user?.name} logged-in
+                </span>
+                <button
+                  type='button'
+                  onClick={logout}>logout
+                </button>
+              </div>
+            }
+          </div>
+        </nav>
+        <Notification />
 
         <Routes>
           <Route path="/users/:id" element={<User />} />
