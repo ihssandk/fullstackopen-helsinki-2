@@ -1,18 +1,20 @@
-import { useEffect , useRef } from 'react'
+import { useEffect } from 'react'
 import loginService from '../services/login'
+import { setUsers } from '../reducers/usersReducer'
+import { useDispatch , useSelector } from 'react-redux'
 
 
 const Users = () => {
-  const usersRef = useRef([])
+  const dispatch = useDispatch()
+  const users = useSelector((state) => state.users)
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const users = await loginService.users()
-      usersRef.current = users
+      const fetchedUsers = await loginService.users()
+      dispatch(setUsers(fetchedUsers))
     }
     fetchUsers()
-  }, [])
-  console.log(usersRef)
+  }, [dispatch])
 
   return (
     <div>
@@ -25,7 +27,7 @@ const Users = () => {
           </tr>
         </thead>
         <tbody>
-          {usersRef.current.map(user => (
+          {users.map(user => (
             <tr key={user.id}>
               <td>{user.name}</td>
               <td>{user.blogs.length}</td>
