@@ -5,7 +5,10 @@ const User = () => {
   const users = useSelector(state => state.users )
   const id = useParams().id
   const user = users.filter(n => n.id === id)
-  console.log(user)
+  if (!user) {
+    return null
+  }
+
   return (
     <div>
       <h2>{user[0].name}</h2>

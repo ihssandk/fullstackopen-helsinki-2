@@ -2,18 +2,23 @@ import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-blogService.setToken(JSON.parse(loggedUserJSON).token)
+let initialState = null
+if (loggedUserJSON) {
+  const parsedUser = JSON.parse(loggedUserJSON)
+  blogService.setToken(parsedUser.token)
+  initialState = parsedUser
+}
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: JSON.parse(loggedUserJSON) ,
+  initialState: JSON.parse(loggedUserJSON),
   reducers: {
     setUser(state, action) {
       const userInfo = action.payload
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(userInfo)
       )
-      blogService.setToken(userInfo.token)
+      blogService.setToken(userInfo?.token)
       return userInfo
     },
     logoutUser(state, action) {

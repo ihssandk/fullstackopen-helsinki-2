@@ -1,13 +1,13 @@
 import { useSelector , useDispatch } from 'react-redux'
 import { useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
+import Blog from './components/Blog'
 import loginService from './services/login'
-import { initializeBlogs , likeBlog , deleteBlog } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { setUser, logoutUser } from './reducers/userReducer'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
@@ -68,16 +68,6 @@ const App = () => {
   }
   )
 
-  const likePost= async (b) => {
-    dispatch(likeBlog(b.id , { ...b , likes : b.likes + 1 }))
-  }
-
-  const deletePost = async (b) => {
-    if (window.confirm(`Are you sure you want to delete ${b.title}`)){
-      dispatch(deleteBlog(b.id))
-    }
-  }
-
   const Blogs = () => {
     return (
       <div>
@@ -90,12 +80,11 @@ const App = () => {
         <h2>blogs</h2>
         {blogs.map(blog =>
           <div key={blog.id}>
-            <Blog
-              user={user?.username}
-              blog={blog}
-              likeBlog={() => likePost(blog)}
-              deleteBlog={() => deletePost(blog)}
-            />
+            <Link to={`/blogs/${blog.id}`}>
+              <div className='blog' style={{ border: '1px dotted rgba(0, 0, 0, 1)', padding: '5px', marginBottom: '5px' }}>
+                {blog.title}
+              </div>
+            </Link>
           </div>
         )}
       </div>
@@ -105,14 +94,13 @@ const App = () => {
   return (
     <Router >
       <div>
-        <Link style={padding} to="/">home</Link>
+        <Link style={padding} to="/">blogs</Link>
         <Link style={padding} to="/users">users</Link>
       </div>
       <div>
-        <h1>login</h1>
         <Notification />
         {user === null ?
-          loginForm() :
+          (<><h1>login</h1><div>{loginForm()} </div></>) :
           <div>
             <span>
               {user?.name} logged-in
@@ -126,6 +114,7 @@ const App = () => {
 
         <Routes>
           <Route path="/users/:id" element={<User />} />
+          <Route path="/blogs/:id" element={<Blog user={user?.username} />} />
           <Route path="/" element={<Blogs />} />
           <Route path="/users" element={<Users />} />
         </Routes>
