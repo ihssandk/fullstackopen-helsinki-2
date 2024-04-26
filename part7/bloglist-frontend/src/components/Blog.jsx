@@ -1,10 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { likeBlog , deleteBlog , addCommentToBlog } from '../reducers/blogReducer'
+import { likeBlog , deleteBlog , addCommentToBlog,initializeBlogs } from '../reducers/blogReducer'
+import { useEffect } from 'react'
 
 const Blog = ({ user }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
   const blogs = useSelector(state => state.blogs )
   console.log(blogs)
   const id = useParams().id
