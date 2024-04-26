@@ -21,6 +21,12 @@ const create = async newObject => {
   return response.data
 }
 
+const addComment = async (id,comment) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`,{ data : comment })
+  console.log(response.data)
+  return response.data
+}
+
 const likingBlog = async (id ,updatedObj) => {
   const response = await axios.put(`${baseUrl}/${id}`,updatedObj)
   return response.data
@@ -33,4 +39,4 @@ const deleteBlog = async (id) => {
   return response.ok
 }
 
-export default { getAll, create, likingBlog, deleteBlog, setToken }
+export default { getAll, create, likingBlog, deleteBlog, setToken , addComment }

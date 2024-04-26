@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { likeBlog , deleteBlog } from '../reducers/blogReducer'
+import { likeBlog , deleteBlog , addCommentToBlog } from '../reducers/blogReducer'
 
 const Blog = ({ user }) => {
   const navigate = useNavigate()
-  const dispatch =useDispatch()
+  const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs )
   console.log(blogs)
   const id = useParams().id
@@ -19,6 +19,12 @@ const Blog = ({ user }) => {
       dispatch(deleteBlog(b.id))
       navigate('/')
     }
+  }
+  const handleComment = (event) => {
+    event.preventDefault()
+    const comment = event.target.comment.value
+    dispatch(addCommentToBlog(blog.id,comment))
+    event.target.comment.value = ''
   }
 
   return (
@@ -35,7 +41,16 @@ const Blog = ({ user }) => {
         )
         }
         <h3>comments</h3>
-        {blog.comments?.map(comment => <li key={Math.floor(Math.random()*1000)}>{comment}</li>)}
+        <form onSubmit={handleComment}>
+          <input
+            type="text"
+            name="comment"
+          />
+          <button type="submit">add comment</button>
+        </form>
+        <ul>
+          {blog.comments?.map(comment => <li key={Math.floor(Math.random()*1000)}>{comment}</li>)}
+        </ul>
       </div>
 
     </div>

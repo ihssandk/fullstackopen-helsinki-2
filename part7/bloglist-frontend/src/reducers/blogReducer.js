@@ -39,6 +39,15 @@ export const likeBlog = (idToLike,updatedObj) => {
     dispatch(setBlogs(blogs))
   }
 }
+
+export const addCommentToBlog = (blogId,comment) => {
+  return async dispatch => {
+    await blogService.addComment(blogId,comment)
+    const blogs = await blogService.getAll()
+    dispatch(setBlogs(blogs))
+  }
+}
+
 export const deleteBlog = idToDelete => {
   return async dispatch => {
     await blogService.deleteBlog(idToDelete)
